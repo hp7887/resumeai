@@ -8,7 +8,6 @@ const config: Config = {
   theme: {
     extend: {
       keyframes: {
-        // ... все ваши keyframes
         'accordion-down': {
           from: { height: '0' },
           to: { height: 'var(--radix-accordion-content-height)' },
@@ -46,13 +45,11 @@ const config: Config = {
         },
       },
       animation: {
-        // ... все ваши animations
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'gradient-pan': 'gradient-pan 15s ease infinite',
         blob: 'blob 20s ease-in-out infinite',
       },
-      // ИСПРАВЛЕНО: Убираем отсюда 'custom-green', так как он теперь в globals.css
       colors: {
         'green-300': '#86efac',
         'purple-300': '#c084fc',

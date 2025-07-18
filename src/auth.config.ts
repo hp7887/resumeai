@@ -1,4 +1,3 @@
-// src/auth.config.ts
 import type { NextAuthConfig } from 'next-auth'
 import Google from 'next-auth/providers/google'
 
@@ -21,9 +20,6 @@ export const authConfig: NextAuthConfig = {
     error: '/auth/error',
   },
   callbacks: {
-    // Коллбэки jwt и session оставляем. Они нужны для обогащения токена
-    // и сессии дополнительными данными (например, ролью), которые
-    // payload-authjs уже добавил в объект `user`.
     jwt({ token, user }) {
       if (user) {
         token.id = user.id

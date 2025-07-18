@@ -62,10 +62,8 @@ export default function HeaderDropdown({ label, items }: HeaderDropdownProps) {
         />
       </button>
 
-      {/* Меню */}
       {open && (
         <>
-          {/* затемнение — чтобы зазора не было видно */}
           <div className="menu-fade" />
 
           <div className="absolute top-full left-0 z-50 w-96 rounded-lg border bg-popover p-1 pt-2 text-popover-foreground shadow-xl">
@@ -74,7 +72,6 @@ export default function HeaderDropdown({ label, items }: HeaderDropdownProps) {
                 <div key={i}>
                   {i > 0 && <div className="my-1 h-px bg-border" />}
 
-                  {/* Заголовок / ссылка группы */}
                   {group.href ? (
                     <Link
                       href={group.href}

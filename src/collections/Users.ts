@@ -10,7 +10,6 @@ export const Users: CollectionConfig = {
     defaultColumns: ['name', 'email', 'role'],
     hidden: ({ user }) => !user || user.role !== 'admin',
   },
-  auth: true,
   access: {
     create: () => true,
     read: ({ req }) => (req.user?.role === 'admin' ? true : { id: { equals: req.user.id } }),

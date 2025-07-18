@@ -1,23 +1,30 @@
-import { NextRequest, NextResponse } from 'next/server'
+import NextAuth from 'next-auth'
+import { authConfig } from './auth.config'
 
-export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl
+const { auth } = NextAuth(authConfig)
 
-  if (pathname.startsWith('/admin')) {
-    const token = req.cookies.get('payload-token')
+// Экспортируем кастомный middleware
+export default auth((req) => {
+  const { nextUrl } = req
+  const isLoggedIn = !!req.auth
 
-    if (!token) {
-      const loginUrl = new URL('/admin/login', req.url)
-      if (pathname !== '/admin/login') {
-        loginUrl.searchParams.set('redirect', pathname)
+  const isAdminRoute = nextUrl.pathname.startsWith('/admin')
+
+  if (isAdminRoute) {
+    if (isLoggedIn) {
+      if (req.auth.user?.role !== 'admin') {
+        return Response.redirect(new URL('/', nextUrl))
       }
-      return NextResponse.redirect(loginUrl)
+      return
     }
+    const loginUrl = new URL('/admin/login', nextUrl.origin)
+    loginUrl.searchParams.set('redirect', nextUrl.pathname)
+    return Response.redirect(loginUrl)
   }
 
-  return NextResponse.next()
-}
+  return
+})
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 }

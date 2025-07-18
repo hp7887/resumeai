@@ -1,23 +1,112 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { useSession, signOut } from 'next-auth/react'
 import {
   Menu,
   BookOpenCheck,
   FileSearch,
   LayoutDashboard,
-  Sparkles,
-  FileText,
-  Landmark,
-  Brush,
-  Heart,
   Brain,
-  Zap,
   CheckCircle,
   FileSignature,
+  User,
+  LogOut,
+  Heart,
 } from 'lucide-react'
+
+import { Button } from '@/components/ui/button'
 import HeaderDropdown from './header-dropdown'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu'
+import { LoginModal } from './auth/LoginModal'
+
+function UserNav() {
+  const { data: session, status } = useSession()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  if (status === 'loading') {
+    return (
+      <div className="flex items-center space-x-2">
+        <Skeleton className="h-10 w-20 rounded-md" />
+        <Skeleton className="h-10 w-24 rounded-md" />
+      </div>
+    )
+  }
+
+  if (session?.user) {
+    const userInitials =
+      session.user.name
+        ?.split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase() || 'U'
+
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+            <Avatar className="h-10 w-10">
+              {session.user.image && (
+                <AvatarImage src={session.user.image} alt={session.user.name || 'Аватар'} />
+              )}
+              <AvatarFallback>{userInitials}</AvatarFallback>
+            </Avatar>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56" align="end" forceMount>
+          <DropdownMenuLabel className="font-normal">
+            <div className="flex flex-col space-y-1">
+              <p className="text-sm font-medium leading-none">{session.user.name}</p>
+              <p className="text-xs leading-none text-muted-foreground">{session.user.email}</p>
+            </div>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {session.user.role === 'admin' && (
+            <DropdownMenuItem asChild>
+              <Link href="/admin">
+                <User className="mr-2 h-4 w-4" />
+                <span>Панель администратора</span>
+              </Link>
+            </DropdownMenuItem>
+          )}
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/' })}>
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Выйти</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+  }
+
+  return (
+    <>
+      <div className="flex items-center space-x-2">
+        <Button
+          variant="outline"
+          className="text-gray-700 dark:text-gray-200 dark:border-gray-600"
+          onClick={() => setIsModalOpen(true)}
+        >
+          Sign in
+        </Button>
+        <Button variant="custom-green" onClick={() => setIsModalOpen(true)}>
+          Sign Up
+        </Button>
+      </div>
+      <LoginModal open={isModalOpen} setOpen={setIsModalOpen} />
+    </>
+  )
+}
 
 export default function Header() {
   const resumeItems = [
@@ -68,9 +157,9 @@ export default function Header() {
   ]
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 bg-white dark:bg-zinc-950 shadow-sm border-b border-border">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-white shadow-sm dark:bg-zinc-950">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex h-16 items-center justify-between">
           <div className="flex items-center space-x-8">
             <Link href="/" className="flex items-center space-x-2 select-none">
               <Heart className="size-7 text-[#6355d8]" fill="#6355d8" />
@@ -92,18 +181,14 @@ export default function Header() {
               </Button>
             </nav>
           </div>
-          <div className="hidden md:flex items-center space-x-2">
-            <Button
-              variant="outline"
-              className="text-gray-700 dark:text-gray-200 dark:border-gray-600"
-            >
-              Sign in
-            </Button>
-            <Button variant="custom-green">Sign Up</Button>
+
+          <div className="hidden md:flex items-center">
+            <UserNav />
           </div>
+
           <div className="md:hidden">
             <Button variant="ghost" size="icon">
-              <Menu className="w-5 h-5" />
+              <Menu className="h-5 w-5" />
               <span className="sr-only">Open menu</span>
             </Button>
           </div>

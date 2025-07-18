@@ -1,4 +1,3 @@
-// src/auth.ts
 import payloadConfig from '@payload-config'
 import NextAuth from 'next-auth'
 import { withPayload } from 'payload-authjs'

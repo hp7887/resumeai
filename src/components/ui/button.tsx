@@ -1,4 +1,3 @@
-// components/ui/button.tsx
 import * as React from 'react'
 import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
@@ -16,8 +15,9 @@ const buttonVariants = cva(
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
-        // ИСПРАВЛЕНИЕ 3: Добавляем новый вариант для зеленой кнопки
-        'custom-green': 'bg-custom-green text-white font-semibold shadow-md hover:bg-green-600',
+        // ИЗМЕНЕНИЕ ЗДЕСЬ:
+        'custom-green':
+          'bg-custom-green text-white font-semibold shadow-md transition-all hover:brightness-95',
       },
       size: {
         default: 'h-10 px-4 py-2',
@@ -33,7 +33,6 @@ const buttonVariants = cva(
   },
 )
 
-// ... остальная часть файла остается без изменений
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {

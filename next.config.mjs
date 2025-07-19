@@ -8,6 +8,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const nextConfig = {
   serverExternalPackages: ['@payloadcms/db-postgres', 'sharp'],
   output: 'standalone',
+  images: {
+    domains: [
+      "images.unsplash.com",
+      "randomuser.me"
+    ],
+  },
 }
 
 export default withPayload(nextConfig, {
